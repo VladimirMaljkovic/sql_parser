@@ -8,6 +8,8 @@ import SQL.sql_query_parts.Where;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SqlParser {
 
@@ -50,9 +52,78 @@ public class SqlParser {
         having = new ArrayList<>();
     }
 
+    public ArrayList<String> splitWhere(String input) {
+        ArrayList<String> parts = new ArrayList<>();
+
+        StringBuilder builder = new StringBuilder();
+        int parenthesesCount = 0;
+
+        Pattern pattern = Pattern.compile("\\b(OR|AND)\\b", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(input);
+
+        int lastIndex = 0;
+        while (matcher.find()) {
+            String match = matcher.group();
+
+            if (parenthesesCount == 0 && (match.equalsIgnoreCase("OR") || match.equalsIgnoreCase("AND"))) {
+                parts.add(builder.toString().trim());
+                builder = new StringBuilder();
+            }
+
+            builder.append(input, lastIndex, matcher.end());
+            lastIndex = matcher.end();
+
+            if (match.equalsIgnoreCase("(")) {
+                parenthesesCount++;
+            } else if (match.equalsIgnoreCase(")")) {
+                parenthesesCount--;
+            }
+        }
+
+        if (lastIndex < input.length()) {
+            builder.append(input, lastIndex, input.length());
+        }
+
+        parts.add(builder.toString().trim());
+
+        return parts;
+    }
+
     public void parseSql(String SQLString) {
         String[] words = SQLString.split(" ");
         String currentKeyword = "none";
+
+        Pattern pattern = Pattern.compile("where (.*?)\\s*(?:order by|group by|$)");
+        Matcher matcher = pattern.matcher(SQLString);
+        if(matcher.find()) {
+            String whereGroup = matcher.group(1);
+            ArrayList<String> whereBad = new ArrayList<>(splitWhere(whereGroup));
+            whereBad.remove(0);
+
+            for (String condition: whereBad) {
+                String[] parts = condition.split(" ");
+                StringBuilder builder = new StringBuilder(parts[0]);
+                if(parts[parts.length-1].equals("or")) {
+                    for (int i = 1; i < parts.length-1; i++) {
+                        builder.append(" " + parts[i]);
+                    }
+                    where.add(builder.toString());
+                    where.add("or");
+                }
+                else if(parts[parts.length-1].equals("and")) {
+                    for (int i = 1; i < parts.length-1; i++) {
+                        builder.append(" " + parts[i]);
+                    }
+                    where.add(builder.toString());
+                    where.add("and");
+                }
+                else
+                    where.add(condition);
+            }
+        }
+
+
+
         for (String word : words) {
             if ((currentKeyword.equals("order") || currentKeyword.equals("group")) && word.equals("by")) {
                 continue;
@@ -83,12 +154,14 @@ public class SqlParser {
                     currentKeyword = "full";
                     continue;
                 }
+                if(currentKeyword.equals("where") && (word.equals("select") || word.equals("from")))
+                    continue;
                 currentKeyword = word;
             } else {
                 switch (currentKeyword) {
                     case "select" -> select.add(word.replaceAll(",", ""));
                     case "from" -> from.add(word);
-                    case "where" -> where.add(word.replaceAll(",", ""));
+                    case "where" -> {}
                     case "inner" -> inner.add(word.replaceAll(",", ""));
                     case "left" -> left.add(word.replaceAll(",", ""));
                     case "right" -> right.add(word.replaceAll(",", ""));
