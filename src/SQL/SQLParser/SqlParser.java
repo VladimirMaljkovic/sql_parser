@@ -1,21 +1,26 @@
 package SQL.SQLParser;
 
+import SQL.SQLQuery;
+import SQL.sql_query_parts.From;
+import SQL.sql_query_parts.Select;
+import SQL.sql_query_parts.Where;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SqlParser {
 
-    private ArrayList<String> select;
-    private ArrayList<String> from;
-    private ArrayList<String> where;
-    private ArrayList<String> inner;
-    private ArrayList<String> full;
-    private ArrayList<String> right;
-    private ArrayList<String> left;
-    private ArrayList<String> order;
-    private ArrayList<String> group;
-    private ArrayList<String> having;
+    private final ArrayList<String> select;
+    private final ArrayList<String> from;
+    private final ArrayList<String> where;
+    private final ArrayList<String> inner;
+    private final ArrayList<String> full;
+    private final ArrayList<String> right;
+    private final ArrayList<String> left;
+    private final ArrayList<String> order;
+    private final ArrayList<String> group;
+    private final ArrayList<String> having;
 
     private final List<String> keyWords = Arrays.asList(
             "select",
@@ -96,8 +101,8 @@ public class SqlParser {
         }
 
 //        System.out.println("select: " + select);
-        System.out.println("from: " + from);
-//        System.out.println("where: " + where);
+//        System.out.println("from: " + from);
+        System.out.println("where: " + where);
 //        System.out.println("inner: " + inner);
 //        System.out.println("left: " + left);
 //        System.out.println("right: " + right);
@@ -105,6 +110,17 @@ public class SqlParser {
 //        System.out.println("order: " + order);
 //        System.out.println("group: " + group);
 //        System.out.println("having: " + having);
+    }
+
+
+    public SQLQuery createSQLquery() {
+        SQLQuery sqlQuery = new SQLQuery();
+        sqlQuery.getSelects().addAll(Select.parseSelect(getSelect()));
+        sqlQuery.setFrom(From.parseFrom(getFrom()));
+        Where where = new Where();
+        sqlQuery.setWhere(where.parseWhere(getWhere()));
+
+        return sqlQuery;
     }
 
     public ArrayList<String> getSelect() {
@@ -146,4 +162,6 @@ public class SqlParser {
     public ArrayList<String> getHaving() {
         return having;
     }
+
+
 }

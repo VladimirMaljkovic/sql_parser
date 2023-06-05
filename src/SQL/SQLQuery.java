@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class SQLQuery {
     private ArrayList<Select> selects;
     private From from;
-    private ArrayList<Where> wheres;
+    private Where where;
 
 
     public SQLQuery() {
@@ -27,6 +27,14 @@ public class SQLQuery {
 
     public From getFrom() {
         return from;
+    }
+
+    public Where getWhere() {
+        return where;
+    }
+
+    public void setWhere(Where where) {
+        this.where = where;
     }
 
     @Override
