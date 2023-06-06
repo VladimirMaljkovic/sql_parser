@@ -66,7 +66,7 @@ public class Where {
             Condition condition = new Condition(relation, table, attribute, operator);
 
             if(sqlQuery.length() > 1) {
-                sqlQuery = sqlQuery.substring(1, sqlQuery.length() - 1);
+                sqlQuery = sqlQuery.substring(1, sqlQuery.length() - 1);  //ovo je string
                 SqlParser sqlParser = new SqlParser();
                 sqlParser.parseSql(sqlQuery);
                 SQLQuery sql = sqlParser.createSQLquery();

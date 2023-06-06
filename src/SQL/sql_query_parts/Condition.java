@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class Condition {
 
-    private String relation;
-    private String operator;
+    private String relation;  //AND / OR
+    private String operator;  // = >< like in
     private String attribute;
     private String table;
     private ArrayList<String> values;

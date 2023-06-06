@@ -92,7 +92,7 @@ public class SqlParser {
     public void parseSql(String SQLString) {
         String[] words = SQLString.split(" ");
         String currentKeyword = "none";
-
+        // PARSING WHERE
         Pattern pattern = Pattern.compile("where (.*?)\\s*(?:order by|group by|$)");
         Matcher matcher = pattern.matcher(SQLString);
         if(matcher.find()) {
