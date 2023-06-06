@@ -182,13 +182,13 @@ public class SqlParser {
 //        System.out.println("select: " + select);
 //        System.out.println("from: " + from);
 //        System.out.println("where: " + where);
-        System.out.println("inner: " + inner);
-        System.out.println("left: " + left);
-        System.out.println("right: " + right);
-        System.out.println("full: " + full);
-        System.out.println("cross: " + cross);
-//        System.out.println("order: " + order);
-//        System.out.println("group: " + group);
+//        System.out.println("inner: " + inner);
+//        System.out.println("left: " + left);
+//        System.out.println("right: " + right);
+//        System.out.println("full: " + full);
+//        System.out.println("cross: " + cross);
+        System.out.println("order: " + order);
+        System.out.println("group: " + group);
     }
 
 
@@ -219,6 +219,12 @@ public class SqlParser {
 
         //FULLS
         sqlQuery.getFulls().addAll(Full.parseFull(getFull()));
+
+        //ORDERS
+        sqlQuery.getOrders().addAll(Order.parseOrder(getOrder()));
+
+        //GROUP
+        sqlQuery.getGroups().addAll(Group.parseGroup(getGroup()));
 
         System.out.println("Output -> " + sqlQuery);
         return sqlQuery;

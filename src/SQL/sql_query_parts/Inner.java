@@ -69,6 +69,10 @@ public class Inner {
             }
 
             inners.add(new Inner(connector, database1, table1, attribute1, database2, table2, attribute2));
+            database1 = null;
+            database2 = null;
+            table2 = null;
+            attribute2 = null;
         }
 
         return inners;

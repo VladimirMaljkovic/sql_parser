@@ -13,6 +13,8 @@ public class SQLQuery {
     private ArrayList<Left> lefts;
     private ArrayList<Right> rights;
     private ArrayList<Full> fulls;
+    private ArrayList<Group> groups;
+    private ArrayList<Order> orders;
 
 
 
@@ -23,6 +25,8 @@ public class SQLQuery {
         lefts = new ArrayList<>();
         rights = new ArrayList<>();
         fulls = new ArrayList<>();
+        groups = new ArrayList<>();
+        orders = new ArrayList<>();
     }
 
     @Override
@@ -71,6 +75,20 @@ public class SQLQuery {
             stringBuilder.append(" ").append(where);
         }
 
+        if(!orders.isEmpty()) {
+            stringBuilder.append(" ORDER BY");
+            for(Order o: orders){
+                stringBuilder.append(" ").append(o);
+            }
+        }
+
+        if(!groups.isEmpty()) {
+            stringBuilder.append(" GROUP BY");
+            for(Group g: groups){
+                stringBuilder.append(" ").append(g);
+            }
+        }
+
         return stringBuilder.toString();
     }
 
@@ -113,5 +131,13 @@ public class SQLQuery {
 
     public ArrayList<Full> getFulls() {
         return fulls;
+    }
+
+    public ArrayList<Group> getGroups() {
+        return groups;
+    }
+
+    public ArrayList<Order> getOrders() {
+        return orders;
     }
 }
