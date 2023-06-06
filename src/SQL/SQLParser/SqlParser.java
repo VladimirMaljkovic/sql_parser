@@ -175,7 +175,7 @@ public class SqlParser {
 
 //        System.out.println("select: " + select);
 //        System.out.println("from: " + from);
-        System.out.println("where: " + where);
+//        System.out.println("where: " + where);
 //        System.out.println("inner: " + inner);
 //        System.out.println("left: " + left);
 //        System.out.println("right: " + right);
@@ -190,8 +190,10 @@ public class SqlParser {
         SQLQuery sqlQuery = new SQLQuery();
         sqlQuery.getSelects().addAll(Select.parseSelect(getSelect()));
         sqlQuery.setFrom(From.parseFrom(getFrom()));
+
         Where where = new Where();
-        sqlQuery.setWhere(where.parseWhere(getWhere()));
+        where.parseWhere(getWhere());
+        sqlQuery.setWhere(where);
 
         return sqlQuery;
     }

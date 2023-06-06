@@ -1,5 +1,7 @@
 package SQL.sql_query_parts;
 
+import SQL.SQLQuery;
+
 import java.util.ArrayList;
 
 public class Condition {
@@ -9,9 +11,10 @@ public class Condition {
     private String attribute;
     private String table;
     private ArrayList<String> values;
-    private Select select;
+    private SQLQuery sqlQuery;
 
     public Condition(String relation, String table, String attribute, String operator) {
+        this.relation = relation;
         this.table = table;
         this.attribute = attribute;
         this.operator = operator;
@@ -38,20 +41,20 @@ public class Condition {
         return values;
     }
 
-    public Select getSelect() {
-        return select;
-    }
-
-    public void setSelect(Select select) {
-        this.select = select;
-    }
-
     public String getTable() {
         return table;
     }
 
     public void setTable(String table) {
         this.table = table;
+    }
+
+    public SQLQuery getSqlQuery() {
+        return sqlQuery;
+    }
+
+    public void setSqlQuery(SQLQuery sqlQuery) {
+        this.sqlQuery = sqlQuery;
     }
 
     @Override
@@ -63,7 +66,13 @@ public class Condition {
         }
         stringBuilder.append(attribute);
         stringBuilder.append(" " + operator + " ");
-        stringBuilder.append(values);
+        if(!values.isEmpty())
+            stringBuilder.append(values);
+        else {
+            stringBuilder.append(sqlQuery);
+        }
+        if(relation != null)
+            stringBuilder.append(" " + relation);
 
 
         return stringBuilder.toString();

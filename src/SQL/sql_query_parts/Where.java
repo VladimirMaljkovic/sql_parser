@@ -1,10 +1,10 @@
 package SQL.sql_query_parts;
 
+import SQL.SQLParser.SqlParser;
 import SQL.SQLQuery;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class Where {
     private ArrayList<Condition> conditions;
@@ -13,90 +13,97 @@ public class Where {
         conditions = new ArrayList<>();
     }
 
-    public Where parseWhere(ArrayList<String> whereList) {
+    public void parseWhere(ArrayList<String> whereList) {
 
-        String current = null;
+        Where where = new Where();
+
+        String current;
         String tableAttr = null;
         String table = null;
-        String attribute = null;
+        String relation = null;
+        String attribute;
         String operator = null;
-        String valuesString = null;
         ArrayList<String> values = new ArrayList<>();
+        String sqlQuery;
+        boolean select = false;
 
         for (int i = 0; i < whereList.size(); i++) {
-            Condition condition;
+
             current = whereList.get(i);
 
 
+            StringBuilder builder = new StringBuilder();
+            if(!current.equals("or") && !current.equals("and")) {
+                String[] parts = current.split(" ");
+                tableAttr = parts[0];
+                operator = parts[1];
+
+                if(parts[2].equals("(select")){
+                    select = true;
+                }
+                for(int j = 2; j < parts.length; j++){
+
+                    if(select){
+                        builder.append(parts[j]).append(" ");
+                    }
+                    else {
+                        values.add(parts[j].replaceAll("[, ()]", ""));
+                    }
+                }
+            }
+
+            sqlQuery = builder.toString().strip();
 
 
-//            Condition condition;
-//            current = whereList.get(i);
-//            if(current.contains("<=")) {
-//                tableAttr = current.substring(0, current.indexOf('<'));
-//                operator = "<=";
-//                valuesString = current.substring(current.indexOf('=')+1);
-//            }
-//            else if (current.contains(">=")) {
-//                tableAttr = current.substring(0, current.indexOf('>'));
-//                operator = ">=";
-//                valuesString = current.substring(current.indexOf('=')+1);
-//            }
-//            else if (current.contains("=")) {
-//                tableAttr = current.substring(0, current.indexOf('='));
-//                operator = "=";
-//                valuesString = current.substring(current.indexOf('=')+1);
-//            }
-//            else if (current.contains("<")) {
-//                tableAttr = current.substring(0, current.indexOf('<'));
-//                operator = "<";
-//                valuesString = current.substring(current.indexOf('<')+1);
-//            }
-//            else if (current.contains(">")) {
-//                tableAttr = current.substring(0, current.indexOf('>'));
-//                operator = ">";
-//                valuesString = current.substring(current.indexOf('>')+1);
-//            }
-//            else //its a 'like' or 'in' statement
-//            {
-//                tableAttr = current;
-//                if (i != whereList.size()+1 && whereList.get(i+1).equals("like")) {
-//                    operator = whereList.get(i+1);
-//                    valuesString = whereList.get(i+2);
-//                    i+=3;
-//                }
-//                else { //sadrzi in
-//                    operator = "in";
-//                }
-//            }
-//
-//            if(tableAttr.contains(".")) {
-//                String[] parts = tableAttr.split("\\.");
-//                table = parts[0];
-//                attribute = parts[1];
-//            }
-//            else
-//                attribute = tableAttr;
-//
-//            condition = new Condition(null, table, attribute, operator);
-//            condition.getValues().add(valuesString);  //todo fix for multiple values
-//            conditions.add(condition);
-//            System.out.println(condition);
-//            current = null;
-//            tableAttr = null;
-//            table = null;
-//            attribute = null;
-//            operator = null;
-//            valuesString = null;
+            if(i+1 < whereList.size()) {
+                relation = whereList.get(i + 1);
+                i++;
+            }
+            if(tableAttr.contains(".")) {
+                table = tableAttr.split("\\.")[0];
+                attribute = tableAttr.split("\\.")[1];
+            }
+            else
+                attribute = tableAttr;
+            Condition condition = new Condition(relation, table, attribute, operator);
 
+            if(sqlQuery.length() > 1) {
+                sqlQuery = sqlQuery.substring(1, sqlQuery.length() - 1);
+                SqlParser sqlParser = new SqlParser();
+                sqlParser.parseSql(sqlQuery);
+                SQLQuery sql = sqlParser.createSQLquery();
+                condition.setSqlQuery(sql);
+            }
+
+            condition.getValues().addAll(values);
+            conditions.add(condition);
+
+
+
+            tableAttr = null;
+            table = null;
+            relation = null;
+            attribute = null;
+            operator = null;
+            values = new ArrayList<>();
+            sqlQuery = null;
+            select = false;
 
 
         }
 
-        return null;
     }
 
     public ArrayList<Condition> getConditions() {
         return conditions;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("WHERE");
+        for (Condition c: conditions) {
+            builder.append(" " + c );
+        }
+        return builder.toString();
     }
 }

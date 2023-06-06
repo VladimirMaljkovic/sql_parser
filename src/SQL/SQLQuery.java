@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class SQLQuery {
     private ArrayList<Select> selects;
     private From from;
-    private Where where;
+    private Where where = null;
 
 
     public SQLQuery() {
@@ -48,6 +48,10 @@ public class SQLQuery {
         }
 
         stringBuilder.append(" FROM " + from + " ");
+
+        if(where != null) {
+            stringBuilder.append(" " + where + " ");
+        }
 
         String finalString = stringBuilder.toString();
         return finalString;

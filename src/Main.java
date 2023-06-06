@@ -24,10 +24,9 @@ public class Main {
 
         sqlParser.parseSql(SQLString6);
 
-
         sqlQuery = sqlParser.createSQLquery();
 
-        //System.out.println(sqlQuery);
+        System.out.println("moj sql query parsiran je " + sqlQuery);
 
     }
 }
