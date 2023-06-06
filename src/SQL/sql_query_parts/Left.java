@@ -2,7 +2,7 @@ package SQL.sql_query_parts;
 
 import java.util.ArrayList;
 
-public class Inner {
+public class Left {
     private String connector;
     private String database1;
     private String table1;
@@ -11,7 +11,7 @@ public class Inner {
     private String table2;
     private String attribute2;
 
-    public Inner(String connector, String database1, String table1, String attribute1, String database2, String table2, String attribute2) {
+    public Left(String connector, String database1, String table1, String attribute1, String database2, String table2, String attribute2) {
         this.connector = connector;
         this.database1 = database1;
         this.table1 = table1;
@@ -21,8 +21,8 @@ public class Inner {
         this.attribute2 = attribute2;
     }
 
-    public static ArrayList<Inner> parseInner(ArrayList<String> innerList) {
-        ArrayList<Inner> inners = new ArrayList<>();
+    public static ArrayList<Left> parseLeft(ArrayList<String> leftList) {
+        ArrayList<Left> lefts = new ArrayList<>();
         String connector;
         String database1 = null;
         String table1;
@@ -31,12 +31,12 @@ public class Inner {
         String table2 = null;
         String attribute2 = null;
 
-        for (int i = 0; i < innerList.size(); i++) {
-            String current = innerList.get(i);
+        for (int i = 0; i < leftList.size(); i++) {
+            String current = leftList.get(i);
             if(current.equals("on")) {
                 connector = current;
-                String[] parts1 = innerList.get(i+1).split("\\.");
-                String[] parts2 = innerList.get(i+3).split("\\.");
+                String[] parts1 = leftList.get(i+1).split("\\.");
+                String[] parts2 = leftList.get(i+3).split("\\.");
                 if(parts1.length == 3) {
                     database1 = parts1[0];
                     database2 = parts2[0];
@@ -68,15 +68,15 @@ public class Inner {
 
             }
 
-            inners.add(new Inner(connector, database1, table1, attribute1, database2, table2, attribute2));
+            lefts.add(new Left(connector, database1, table1, attribute1, database2, table2, attribute2));
         }
 
-        return inners;
+        return lefts;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("INNER JOIN");
+        StringBuilder builder = new StringBuilder("LEFT JOIN");
         if(connector.equals("on")) {
             builder.append(" ON ");
             if(database1 != null) {

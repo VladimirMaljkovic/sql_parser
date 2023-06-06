@@ -211,7 +211,11 @@ public class SqlParser {
         //INNER
         sqlQuery.getInners().addAll(Inner.parseInner(getInner()));
 
+        //LEFT
+        sqlQuery.getLefts().addAll(Left.parseLeft(getLeft()));
 
+        //RIGHTS
+        sqlQuery.getRights().addAll(Right.parseRight(getRight()));
 
         System.out.println("Output -> " + sqlQuery);
         return sqlQuery;

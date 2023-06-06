@@ -10,6 +10,8 @@ public class SQLQuery {
     private Where where = null;
     private ArrayList<Cross> crosses;
     private ArrayList<Inner> inners;
+    private ArrayList<Left> lefts;
+    private ArrayList<Right> rights;
 
 
 
@@ -17,6 +19,8 @@ public class SQLQuery {
         selects = new ArrayList<>();
         crosses = new ArrayList<>();
         inners = new ArrayList<>();
+        lefts = new ArrayList<>();
+        rights = new ArrayList<>();
     }
 
     @Override
@@ -40,6 +44,18 @@ public class SQLQuery {
         if(!inners.isEmpty()) {
             for(Inner i: inners) {
                 stringBuilder.append(" ").append(i);
+            }
+        }
+
+        if(!lefts.isEmpty()) {
+            for(Left l: lefts) {
+                stringBuilder.append(" ").append(l);
+            }
+        }
+
+        if(!rights.isEmpty()) {
+            for(Right r: rights) {
+                stringBuilder.append(" ").append(r);
             }
         }
 
@@ -77,5 +93,13 @@ public class SQLQuery {
 
     public ArrayList<Inner> getInners() {
         return inners;
+    }
+
+    public ArrayList<Left> getLefts() {
+        return lefts;
+    }
+
+    public ArrayList<Right> getRights() {
+        return rights;
     }
 }
