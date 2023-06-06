@@ -76,15 +76,11 @@ public class Where {
             condition.getValues().addAll(values);
             conditions.add(condition);
 
-
-
             tableAttr = null;
             table = null;
             relation = null;
-            attribute = null;
             operator = null;
             values = new ArrayList<>();
-            sqlQuery = null;
             select = false;
 
         }
