@@ -22,9 +22,10 @@ public class Main {
         String SQLString7 = "select first_name, last_name, salary from hr.employees cross join db.table12 cross join db2.table12345";
         String SQLString8 = "select first_name, last_name, salary from hr.employees left join on db1.table1.attr1 = db2.table2.attr2 right join using(jobs.id) right join using(dragan.ana.maljkovic)";
         String SQLString9 = "select first_name, last_name, salary from hr.employees inner join using(jobs.id)";
+        String SQLString10 = "select first_name, last_name, salary from hr.employees full join table2 on table1.attr1 = table2.attr2 full outer join table12343425 on table5.attr12 = table2.attr2234";
 
 
-        sqlParser.parseSql(SQLString8);
+        sqlParser.parseSql(SQLString10);
 
         sqlQuery = sqlParser.createSQLquery();
 

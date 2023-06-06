@@ -217,6 +217,9 @@ public class SqlParser {
         //RIGHTS
         sqlQuery.getRights().addAll(Right.parseRight(getRight()));
 
+        //FULLS
+        sqlQuery.getFulls().addAll(Full.parseFull(getFull()));
+
         System.out.println("Output -> " + sqlQuery);
         return sqlQuery;
     }

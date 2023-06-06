@@ -12,6 +12,7 @@ public class SQLQuery {
     private ArrayList<Inner> inners;
     private ArrayList<Left> lefts;
     private ArrayList<Right> rights;
+    private ArrayList<Full> fulls;
 
 
 
@@ -21,6 +22,7 @@ public class SQLQuery {
         inners = new ArrayList<>();
         lefts = new ArrayList<>();
         rights = new ArrayList<>();
+        fulls = new ArrayList<>();
     }
 
     @Override
@@ -56,6 +58,12 @@ public class SQLQuery {
         if(!rights.isEmpty()) {
             for(Right r: rights) {
                 stringBuilder.append(" ").append(r);
+            }
+        }
+
+        if(!fulls.isEmpty()) {
+            for(Full f: fulls) {
+                stringBuilder.append(" ").append(f);
             }
         }
 
@@ -101,5 +109,9 @@ public class SQLQuery {
 
     public ArrayList<Right> getRights() {
         return rights;
+    }
+
+    public ArrayList<Full> getFulls() {
+        return fulls;
     }
 }
