@@ -15,8 +15,6 @@ public class Where {
 
     public void parseWhere(ArrayList<String> whereList) {
 
-        Where where = new Where();
-
         String current;
         String tableAttr = null;
         String table = null;
@@ -89,9 +87,7 @@ public class Where {
             sqlQuery = null;
             select = false;
 
-
         }
-
     }
 
     public ArrayList<Condition> getConditions() {

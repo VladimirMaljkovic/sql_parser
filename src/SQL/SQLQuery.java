@@ -47,10 +47,10 @@ public class SQLQuery {
                 stringBuilder.append(", ");
         }
 
-        stringBuilder.append(" FROM " + from + " ");
+        stringBuilder.append(" FROM " + from);
 
         if(where != null) {
-            stringBuilder.append(" " + where + " ");
+            stringBuilder.append(" " + where + "");
         }
 
         String finalString = stringBuilder.toString();
