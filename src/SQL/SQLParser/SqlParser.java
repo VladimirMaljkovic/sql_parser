@@ -1,10 +1,7 @@
 package SQL.SQLParser;
 
 import SQL.SQLQuery;
-import SQL.sql_query_parts.Cross;
-import SQL.sql_query_parts.From;
-import SQL.sql_query_parts.Select;
-import SQL.sql_query_parts.Where;
+import SQL.sql_query_parts.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -210,6 +207,9 @@ public class SqlParser {
 
         //CROSS
         sqlQuery.getCrosses().addAll(Cross.parseCross(getCross()));
+
+        //INNER
+        sqlQuery.getInners().addAll(Inner.parseInner(getInner()));
 
 
 

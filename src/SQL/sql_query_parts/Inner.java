@@ -22,14 +22,83 @@ public class Inner {
     }
 
     public static ArrayList<Inner> parseInner(ArrayList<String> innerList) {
+        ArrayList<Inner> inners = new ArrayList<>();
+        String connector;
+        String database1 = null;
+        String table1;
+        String attribute1;
+        String database2 = null;
+        String table2 = null;
+        String attribute2 = null;
 
-        for (String current: innerList) {
+        for (int i = 0; i < innerList.size(); i++) {
+            String current = innerList.get(i);
+            if(current.equals("on")) {
+                connector = current;
+                String[] parts1 = innerList.get(i+1).split("\\.");
+                String[] parts2 = innerList.get(i+3).split("\\.");
+                if(parts1.length == 3) {
+                    database1 = parts1[0];
+                    database2 = parts2[0];
+                    table1 = parts1[1];
+                    table2 = parts2[1];
+                    attribute1 = parts1[2];
+                    attribute2 = parts2[2];
+                }
+                else {
+                    table1 = parts1[0];
+                    table2 = parts2[0];
+                    attribute1 = parts1[1];
+                    attribute2 = parts2[1];
+                }
+                i+=3;
+            }
+            else {
+                System.out.println("usao u else");
+                connector = "using";
+                String[] parts = current.substring(6, current.length() - 1).split("\\.");
+                if(parts.length == 3) {
+                    database1 = parts[0];
+                    table1 = parts[1];
+                    attribute1 = parts[2];
+                }
+                else {
+                    table1 = parts[0];
+                    attribute1 = parts[1];
+                }
 
+            }
+
+            inners.add(new Inner(connector, database1, table1, attribute1, database2, table2, attribute2));
         }
 
-        return null;
+        return inners;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("INNER JOIN");
+        if(connector.equals("on")) {
+            builder.append(" ON ");
+            if(database1 != null) {
+                builder.append(database1).append(".").append(table1).append(".").append(attribute1)
+                        .append(" = ").append(database2).append(".").append(table2).append(".").append(attribute2);
+            }
+            else
+                builder.append(table1).append(".").append(attribute1)
+                        .append(" = ").append(table2).append(".").append(attribute2);
+        }
+        else {
+            builder.append(" USING(");
+            if(database1 != null)
+                builder.append(database1).append(".").append(table1).append(".").append(attribute1);
+            else
+                builder.append(table1).append(".").append(attribute1);
+            builder.append(")");
+        }
+
+        return builder.toString();
+    }
 
     public String getConnector() {
         return connector;

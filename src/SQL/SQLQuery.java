@@ -37,9 +37,11 @@ public class SQLQuery {
             }
         }
 
-//        if(inner != null && inner.getConnector()!=null){
-//            stringBuilder.append(" ").append(inner);
-//        }
+        if(!inners.isEmpty()) {
+            for(Inner i: inners) {
+                stringBuilder.append(" ").append(i);
+            }
+        }
 
         if(!where.getConditions().isEmpty()) {
             stringBuilder.append(" ").append(where);
