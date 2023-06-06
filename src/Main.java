@@ -19,15 +19,14 @@ public class Main {
         String SQLString4 = "select first_name, last_name, salary from hr.employees where salary = (select max(salary) from hr.employees)";
         String SQLString6 = "select first_name, last_name, salary from hr.employees where name = 'Ana' or salary >= 12 or salary = (select max(salary) from hr.employees) or hr.name in ('a', 'b', 'c', 'd') and city in (select cities from country where name like '%ad' or name like 'be%')";
         String SQLString5 = "select first_name, last_name, salary from hr.employees where users.name = 'ana' or country = 'serbia' and hr.salary >= 1200 or table1.name3 like '%peepee%'";
+        String SQLString7 = "select first_name, last_name, salary from hr.employees cross join db.table12 cross join db2.table12345";
+        String SQLString8 = "select first_name, last_name, salary from hr.employees inner join on db1.table1.attr1 = db2.table2.attr2 inner join using(jobs.id)";
+        String SQLString9 = "select first_name, last_name, salary from hr.employees inner join using(jobs.id)";
 
 
-        System.out.println(SQLString6);
-
-        sqlParser.parseSql(SQLString6);
+        sqlParser.parseSql(SQLString8);
 
         sqlQuery = sqlParser.createSQLquery();
-
-        System.out.println("moj sql query parsiran je " + sqlQuery);
 
     }
 }

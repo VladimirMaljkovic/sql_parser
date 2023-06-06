@@ -1,6 +1,7 @@
 package SQL.SQLParser;
 
 import SQL.SQLQuery;
+import SQL.sql_query_parts.Cross;
 import SQL.sql_query_parts.From;
 import SQL.sql_query_parts.Select;
 import SQL.sql_query_parts.Where;
@@ -19,10 +20,10 @@ public class SqlParser {
     private final ArrayList<String> inner;
     private final ArrayList<String> full;
     private final ArrayList<String> right;
+    private final ArrayList<String> cross;
     private final ArrayList<String> left;
     private final ArrayList<String> order;
     private final ArrayList<String> group;
-    private final ArrayList<String> having;
 
     private final List<String> keyWords = Arrays.asList(
             "select",
@@ -36,6 +37,7 @@ public class SqlParser {
             "full",
             "group",
             "order",
+            "cross",
             "having",
             "by");
 
@@ -49,7 +51,7 @@ public class SqlParser {
         full = new ArrayList<>();
         left = new ArrayList<>();
         right = new ArrayList<>();
-        having = new ArrayList<>();
+        cross = new ArrayList<>();
     }
 
     public ArrayList<String> splitWhere(String input) {
@@ -90,10 +92,12 @@ public class SqlParser {
     }
 
     public void parseSql(String SQLString) {
+        System.out.println("input -> " + SQLString);
         String[] words = SQLString.split(" ");
         String currentKeyword = "none";
+
         // PARSING WHERE
-        Pattern pattern = Pattern.compile("where (.*?)\\s*(?:order by|group by|$)");
+        Pattern pattern = Pattern.compile("where (.*?)\\s*(?:order by|group by|$)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(SQLString);
         if(matcher.find()) {
             String whereGroup = matcher.group(1);
@@ -103,16 +107,16 @@ public class SqlParser {
             for (String condition: whereBad) {
                 String[] parts = condition.split(" ");
                 StringBuilder builder = new StringBuilder(parts[0]);
-                if(parts[parts.length-1].equals("or")) {
+                if(parts[parts.length-1].equals("or") || parts[parts.length-1].equals("OR")) {
                     for (int i = 1; i < parts.length-1; i++) {
-                        builder.append(" " + parts[i]);
+                        builder.append(" ").append(parts[i]);
                     }
                     where.add(builder.toString());
                     where.add("or");
                 }
-                else if(parts[parts.length-1].equals("and")) {
+                else if(parts[parts.length-1].equals("and") || parts[parts.length-1].equals("AND")) {
                     for (int i = 1; i < parts.length-1; i++) {
-                        builder.append(" " + parts[i]);
+                        builder.append(" ").append(parts[i]);
                     }
                     where.add(builder.toString());
                     where.add("and");
@@ -132,6 +136,11 @@ public class SqlParser {
                 // when there is inner join
                 if(currentKeyword.equals("inner") && word.equals("join")) {
                     currentKeyword = "inner";
+                    continue;
+                }
+                // when there is cross join
+                if(currentKeyword.equals("cross") && word.equals("join")) {
+                    currentKeyword = "cross";
                     continue;
                 }
                 // when there is only join (without inner)
@@ -168,7 +177,7 @@ public class SqlParser {
                     case "full" -> full.add(word.replaceAll(",", ""));
                     case "order" -> order.add(word.replaceAll(",", ""));
                     case "group" -> group.add(word.replaceAll(",", ""));
-                    case "having" -> having.add(word.replaceAll(",", ""));
+                    case "cross" -> cross.add(word.replaceAll(",", ""));
                 }
             }
         }
@@ -176,25 +185,35 @@ public class SqlParser {
 //        System.out.println("select: " + select);
 //        System.out.println("from: " + from);
 //        System.out.println("where: " + where);
-//        System.out.println("inner: " + inner);
-//        System.out.println("left: " + left);
-//        System.out.println("right: " + right);
-//        System.out.println("full: " + full);
+        System.out.println("inner: " + inner);
+        System.out.println("left: " + left);
+        System.out.println("right: " + right);
+        System.out.println("full: " + full);
+        System.out.println("cross: " + cross);
 //        System.out.println("order: " + order);
 //        System.out.println("group: " + group);
-//        System.out.println("having: " + having);
     }
 
 
     public SQLQuery createSQLquery() {
         SQLQuery sqlQuery = new SQLQuery();
+        //SELECT
         sqlQuery.getSelects().addAll(Select.parseSelect(getSelect()));
+
+        //FROM
         sqlQuery.setFrom(From.parseFrom(getFrom()));
 
+        //WHERE
         Where where = new Where();
         where.parseWhere(getWhere());
         sqlQuery.setWhere(where);
 
+        //CROSS
+        sqlQuery.getCrosses().addAll(Cross.parseCross(getCross()));
+
+
+
+        System.out.println("Output -> " + sqlQuery);
         return sqlQuery;
     }
 
@@ -234,9 +253,7 @@ public class SqlParser {
         return group;
     }
 
-    public ArrayList<String> getHaving() {
-        return having;
+    public ArrayList<String> getCross() {
+        return cross;
     }
-
-
 }
